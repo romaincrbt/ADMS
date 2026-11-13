@@ -144,8 +144,10 @@ w_id   = sol_list(2,:);
 f_id   = w_id/(2*pi);                          % Hz
 A_id   = sol_list(ind(1,:), :);                % nFRF x Nmode : colonne k = deformee du mode k
 % A_j ~ Phi(xj)*Phi(L)/m_i : le signe de Phi(L) alterne d'un mode a l'autre
-s_tip  = sign(Phi(L, 1:Nmode));                % 1 x Nmode
-Phi_id = A_id .* s_tip ./ max(abs(A_id), [], 1);   % deformees normalisees, signe aligne
+Phi_id = zeros(nFRF, Nmode);                  % colonne k = deformee normalisee du mode k
+for k = 1:Nmode
+    Phi_id(:,k) = A_id(:,k) * sign(Phi(L,k)) / max(abs(A_id(:,k)));   % que des operations scalaires
+end
 
 %% Item 4 : qualite de l'identification - FRF exp sur tout le domaine, les 4 fits sur leur bande
 ph_exp = unwrap(angle(G_exp), [], 2);          % phase deroulee sur tout le domaine (nFRF x M)
